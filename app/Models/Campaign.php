@@ -1,0 +1,27 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+
+class Campaign extends Model
+{
+    use HasFactory;
+
+    // protected $guarded = [];
+    // // Table
+    // protected $table = 'campaigns';
+
+    // // Primary Key
+    // public $primaryKey = 'id';
+
+    // // Time Stamp
+    // public $timestamps = true;
+
+    // //Model relationship
+    // public function user()
+    // {
+    //     return $this->belongsTo('App\Models\User');
+    // }
+}
