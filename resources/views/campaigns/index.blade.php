@@ -35,7 +35,7 @@
                             @if(!empty($images))
                                     @foreach($images as $image)
                                         {{-- <img style="width:auto" src="/storage/cover_images/{{$image}}"> --}}
-                                        <img style="width:auto" src="/image/upload/v1637132013/{{$image}}">
+                                        <img style="width:auto" src="https://res.cloudinary.com/hrwev09ub/image/upload/v1637132013/{{$image}}">
                                         {{-- {{dd($image)}} --}}
                                         {{-- {{cl_image_tag($image)}} --}}
                                         {{-- {{$cld->imageTag($image)}} --}}
