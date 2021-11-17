@@ -55,6 +55,7 @@ class CampaignController extends Controller
         if($request->hasFile('cover_image')){
             $formInput=$request->all();
             $fileNameToStore=array();
+            $fileNameToStore0=array();
             $nam = "Azure";
             if($files=$request->file('cover_image')){
                 foreach($files as $key => $file){
@@ -62,15 +63,18 @@ class CampaignController extends Controller
                     $filename = pathinfo($name, PATHINFO_FILENAME);
                     $extension = $file->getClientOriginalExtension();
                     $newname = $filename.'_'.time().'.'.$extension;
+                    $uploadedFileUrl = Cloudinary::upload($file->getRealPath())->getSecurePath();
                     $path = $file->storeAs('public/cover_images', $newname);
                     $fileNameToStore[]=$newname;
+                    $fileNameToStore0[]=$uploadedFileUrl;
     
                 }
-             
+                
             }
             
         } else {
             $fileNameToStore = ['noimage.jpg'];
+            $fileNameToStore0 = ['https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.shutterstock.com%2Fsearch%2Fno%2Bcompany&psig=AOvVaw18WTCRZs1q6aijlhRN9Eu8&ust=1637218595553000&source=images&cd=vfe&ved=0CAsQjRxqFwoTCPCE8dvonvQCFQAAAAAdAAAAABA2'];
         }
 
         
@@ -81,7 +85,7 @@ class CampaignController extends Controller
         $campaign->date_to = $request->input('date_to');
         $campaign->total_budget = $request->input('total_budget');
         $campaign->daily_budget = $request->input('daily_budget');
-        $campaign->cover_image = json_encode($fileNameToStore);
+        $campaign->cover_image = json_encode($fileNameToStore0);
         $campaign->save();
         
         return response()->json(['Campaign created successfully.', new CampaignResource($campaign)]);
@@ -118,8 +122,6 @@ class CampaignController extends Controller
             'date_to' => 'required',
             'total_budget' => 'required',
             'daily_budget' => 'required',
-            // 'cover_image' => 'image|nullable|max:1999'
-            'cover_image' => 'required',
             'cover_image.*' => 'mimes:jpg,png,jpeg,gif,svg'
         ]);
 
@@ -133,6 +135,7 @@ class CampaignController extends Controller
         if($request->hasFile('cover_image')){
             $formInput=$request->all();
             $fileNameToStore=array();
+            $fileNameToStore0=array();
             $nam = "Azure";
             if($files=$request->file('cover_image')){
                 foreach($files as $key => $file){
@@ -140,15 +143,18 @@ class CampaignController extends Controller
                     $filename = pathinfo($name, PATHINFO_FILENAME);
                     $extension = $file->getClientOriginalExtension();
                     $newname = $filename.'_'.time().'.'.$extension;
+                    $uploadedFileUrl = Cloudinary::upload($file->getRealPath())->getSecurePath();
                     $path = $file->storeAs('public/cover_images', $newname);
                     $fileNameToStore[]=$newname;
+                    $fileNameToStore0[]=$uploadedFileUrl;
                 }
                
             }
             
-        } else {
-            $fileNameToStore = ['noimage.jpg'];
-        }
+        } 
+        // else {
+        //     $fileNameToStore = ['noimage.jpg'];
+        // }
 
         
 
@@ -159,7 +165,9 @@ class CampaignController extends Controller
         $campaign->date_to = $request->input('date_to');
         $campaign->total_budget = $request->input('total_budget');
         $campaign->daily_budget = $request->input('daily_budget');
-        $campaign->cover_image = json_encode($fileNameToStore);
+        if($request->hasFile('cover_image')){
+            $campaign->cover_image = json_encode($fileNameToStore0);
+        }
         $campaign->save();
         
         return response()->json(['Campaign updated successfully.', new ProgramResource($campaign)]);
@@ -176,5 +184,32 @@ class CampaignController extends Controller
         $campaign->delete();
 
         return response()->json('Campaign deleted successfully');
+    }
+
+    public function newdestroy(Request $request)
+    {
+        //
+        // $campaign = Campaign::find($id);
+        $campaign = Campaign::find($request->input('id'));
+        //Check for correct user
+        if(!Auth()->user()->id)
+        {
+            return redirect('/campaigns')->with('error', 'Unauthorized Page');
+
+        }
+        $images = json_decode($campaign->cover_image);
+        if(!empty($images)){
+            foreach($images as $image){
+                if($image != 'noimage.jpg'){
+                    // Delete Image
+                    //Storage::delete('public/cover_images/'.$image);
+
+                    Cloudinary::destroy($image);
+                }
+            }
+        }
+        
+        $campaign->delete();
+        return redirect('/campaigns')->with('success','Campaign Removed');
     }
 }

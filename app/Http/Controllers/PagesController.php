@@ -9,7 +9,7 @@ class PagesController extends Controller
     //
     //
     public function index(){
-        $title = "Welcome to laravel";
+        $title = "Welcome to Ukdion";
         //return view('pages.index',compact('title'));//passing variable to view 1
         return view('pages.index')->with('title', $title);//passing variable to view 2
         //return 'INDEX';

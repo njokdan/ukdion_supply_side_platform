@@ -33,7 +33,7 @@ Route::get('/campaigns/{id}', [CampaignsController::class, 'show']);
 
 Route::get('/campaigns/{id}/delete', [CampaignsController::class, 'destroy']);
 
-Route::get('/campaigns/delete', [CampaignsController::class, 'newdestroy']);
+Route::post('/campaigns/delete', [CampaignsController::class, 'newdestroy']);
 
 Route::get('/campaigns/{id}/edit', [CampaignsController::class, 'edit']);
 

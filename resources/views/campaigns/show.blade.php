@@ -23,15 +23,27 @@
         {{-- @if(Auth::user()->id === $campaign->user_id) --}}
             <hr>
             <a href="/campaigns/{{$campaign->id}}/edit" class="btn btn-success">Edit</a>
-            {!!Form::open(['action' => ['CampaignsController@destroy', $campaign->id], 'method' => 'POST', 'class' => 'pull-right'])!!}
+
+            <form name="campaign-upload-form" method="POST" action="{{ url('/campaigns/delete') }}" accept-charset="utf-8" enctype="multipart/form-data">
+                @csrf
+                <div class="form-group">
+                    {{-- <label for="name">Campaign Name:</label> --}}
+                    <input type="hidden" class="form-control" id="name" name="id" value="{{$campaign->id}}" placeholder="Campaign Name" required/>
+                </div>
+                <div class="form-group">
+                    <input type="submit" value="Delete" class="btn btn-danger" />
+                </div>
+            </form>
+            {{-- {!!Form::open(['action' => ['CampaignsController@destroy', $campaign->id], 'method' => 'POST', 'class' => 'pull-right'])!!}
                 {{Form::hidden('_method','DELETE')}}
                 {{Form::submit('Delete',['class' => 'btn btn-danger'])}}
-            {!!Form::close()!!} 
-            <a href="#" type="button" class="btn btn-primary" data-toggle="modal" data-target="#p{{$campaign->id}}">
-            Preview
-            </a> 
+            {!!Form::close()!!}  --}}
+            
         {{-- @endif       --}}
     @endif
+    <a href="#" type="button" class="btn btn-primary" data-toggle="modal" data-target="#p{{$campaign->id}}">
+            Preview
+            </a> 
 
     <!-- Modal -->
         <div class="modal fade" id="p{{$campaign->id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -48,7 +60,8 @@
                         ?>
                             @if(!empty($images))
                                     @foreach($images as $image)
-                                        <img style="width:auto" src="/storage/cover_images/{{$image}}">
+                                        {{-- <img style="width:auto" src="/storage/cover_images/{{$image}}"> --}}
+                                        <img  src="{{$image}}">
                                     @endforeach
                             @endif
                     </div>
