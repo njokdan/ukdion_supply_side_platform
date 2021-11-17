@@ -33,7 +33,8 @@
                             @if(!empty($images))
                                     @foreach($images as $image)
                                         {{-- <img style="width:auto" src="/storage/cover_images/{{$image}}"> --}}
-                                        <img style="width:auto" src="{{$image}}">
+                                        {{-- <img style="width:auto" src={{$image}}> --}}
+                                        {{dd($image)}}
                                     @endforeach
                             @endif
                     </div>
